@@ -7,7 +7,6 @@ const userAuthMiddleware = async (req, res, next) => {
   } else {
     token = token.split(" ")[1];
     jwt.verify(token, process.env.jwtKey, (err, user) => {
-      console.log("user<=====>", user);
       req.user = user;
       next();
     });

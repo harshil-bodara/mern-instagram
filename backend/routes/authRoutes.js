@@ -11,7 +11,7 @@ const {
 
 router.post("/login", loginUser);
 router.post("/register", uploads.single("profile"), registerUser);
-router.get("/register", getUser);
+router.get("/", getUser);
 router.post("/resetPassword", resetPassword);
 router.post("/forgotPassword", forgotPassword);
 

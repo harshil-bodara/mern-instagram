@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { HOC } from "./HOC";
 import { useDispatch } from "react-redux";
 import { createPost } from "../Store/Action/PostAction";
+import { useNavigate } from "react-router-dom";
 
 const UserPost = () => {
   const dispatch = useDispatch();
@@ -9,6 +10,7 @@ const UserPost = () => {
     image: '',
     description: ''
   });
+  const navigate = useNavigate();
 
   const getValue = async (e) => {
     if (e.target.type === "file") {
@@ -24,7 +26,8 @@ const UserPost = () => {
     const postData = new FormData();
     postData.append("image", postobj.image);
     postData.append("description", postobj.description);
-    dispatch(createPost(postData));
+    dispatch(createPost(postData))
+    navigate("/home");
   }
 
   return (

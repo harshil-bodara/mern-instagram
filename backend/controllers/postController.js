@@ -18,6 +18,20 @@ const getPosts = async (req, res) => {
   }
 };
 
+const getAllPosts = async (req, res) => {
+  try {
+    let posts = await post.findAll({});
+    return res.status(200).send({
+      message: "Allpost get successfully",
+      post: posts,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 const addPosts = async (req, res) => {
   try {
     const { description } = req.body;
@@ -25,7 +39,6 @@ const addPosts = async (req, res) => {
     if (!description) {
       throw new Error("All fields are required");
     } else {
-      console.log("req.user====>", req.user);
       const { id } = req.user;
       const createPost = await post.create({
         description: description,
@@ -68,13 +81,14 @@ const deletePost = async (req, res) => {
     }
   } catch (error) {
     return res.status(400).json({
-      message: error.message,
+      message: error.message, 
     });
   }
 };
 
 module.exports = {
   getPosts,
+  getAllPosts,
   addPosts,
   deletePost,
 };

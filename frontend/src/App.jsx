@@ -12,7 +12,6 @@ import PublicRoute from "./ProtectedRoute/PublicRoute";
 import { useSelector } from "react-redux";
 import UserPost from "./Componant/UserPost";
 
-
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
   return (

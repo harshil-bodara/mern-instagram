@@ -44,6 +44,19 @@ const registerUser = async (req, res) => {
   }
 };
 
+const getUser = async (req, res) => {
+  try {
+    let users = await user.findAll({});
+    return res.status(200).json({
+      user: users,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -57,7 +70,7 @@ const loginUser = async (req, res) => {
         const IsMatch = await bcrypt.compare(password, users.password);
         if (email === users.email && IsMatch) {
           jwt.sign(
-            { email: users.email, id: users.id },
+            { name:users.username,profile:users.profile ,id: users.id },
             process.env.jwtKey,
             { expiresIn: "24h" },
             (err, token) => {
@@ -85,62 +98,6 @@ const loginUser = async (req, res) => {
     } else {
       res.send({ message: "All fields are required" });
     }
-  } catch (error) {
-    return res.status(400).json({
-      message: error.message,
-    });
-  }
-  // try {
-  //   const { email, password } = req.body;
-  //   if (email && password) {
-  //     const users = await user.findOne({
-  //       where: {
-  //         email: email,
-  //       },
-  //     });
-  //     if (users) {
-  //       const IsMatch = await bcrypt.compareSync(
-  //         password,
-  //         users.dataValues.password
-  //       );
-  //       if (IsMatch) {
-  //         jwt.sign(
-  //           { IsMatch },
-  //           process.env.jwtKey,
-  //           { expiresIn: "24h" },
-  //           (err, token) => {
-  //             if (err) {
-  //               res.send({ message: "Something went wrong, please try agin" });
-  //             }
-  //             return res.status(200).send({
-  //               message: "user login successfully",
-  //               user: users.dataValues,
-  //               token: token,
-  //             });
-  //           }
-  //         );
-  //       } else {
-  //         res.send({ result: "User not found" });
-  //       }
-  //     } else {
-  //       res.send({ result: "You are not register user" });
-  //     }
-  //   } else {
-  //     res.send({ message: "All fields are required" });
-  //   }
-  // } catch (error) {
-  //   return res.status(400).json({
-  //     message: error.message,
-  //   });
-  // }
-};
-
-const getUser = async (req, res) => {
-  try {
-    let users = await user.findAll({});
-    return res.status(200).json({
-      user: users,
-    });
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -192,9 +149,6 @@ const forgotPassword = async (req, res) => {
       }
     );
     sendMail(userData.fullName, userData.email, randomToken);
-    // res.status(200).send({
-    //   message: "Please check your inbox of mail and reset your password",
-    // });
   } else {
     res.status(200).send({ message: "This email does not exist" });
   }

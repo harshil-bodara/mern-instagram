@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../Store/Reducer/RootReducers";
@@ -6,17 +6,39 @@ import { FaHome } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { BiSearch } from "react-icons/bi";
 import { MdOutlinePostAdd } from "react-icons/md";
+import axios from "axios";
 
 export const HOC = (Componants) => {
   const Newcomponant = () => {
+    const [user, setuser] = useState([]);
+    const [bar, setBar] = useState({ isHidden: true });
     const dispatch = useDispatch();
+    const loginUser = JSON.parse(localStorage.getItem("LoginUser"));
     const logoutAccount = () => {
       dispatch(logout());
       localStorage.clear("LoginUser");
       localStorage.clear("Token");
     };
 
-    const showUser = () => {};
+    useEffect(() => {
+      getUser();
+    }, []);
+
+    const getUser = async () => {
+      await axios
+        .get("http://localhost:5000/user")
+        .then((response) => {
+          setuser(response.data.user);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    const showUser = () => {
+      setBar({ isHidden: !bar.isHidden });
+    };
+
+    const style = { visibility: bar.isHidden ? 'hidden' : 'visible' };
 
     return (
       <>
@@ -57,7 +79,6 @@ export const HOC = (Componants) => {
               <div>
                 <input type="text" placeholder="Search..." onClick={showUser} />
                 <BiSearch size={30} />
-                <div></div>
               </div>
               <div>
                 <Link to="/profile">
@@ -67,6 +88,22 @@ export const HOC = (Componants) => {
                   Logout
                 </button>
               </div>
+            </div>
+            <div id="user-div" style={style}>
+              {user.map((item, i) => {
+                if (item.id !== loginUser.id) {
+                  return (
+                    <div className="d-flex justify-content-between align-items-center">
+                      <img
+                        src={`http://localhost:5000/${item.profile}`}
+                        style={{ width: "45px", borderRadius: "50%" }}
+                      />
+                      <p className="ms-3 mt-3">{item.username}</p>
+                      <button className="btn btn-primary">Follow</button>
+                    </div>
+                  );
+                }
+              })}
             </div>
             <div>
               <Componants />

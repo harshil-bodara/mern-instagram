@@ -1,11 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Modal } from "react-bootstrap";
 import { HOC } from "./HOC";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { deletePost } from "../Store/Action/PostAction";
 
 const Profile = () => {
-  let profileData = JSON.parse(localStorage.getItem('LoginUser'));
+  let profileData = JSON.parse(localStorage.getItem("LoginUser"));
+  const [post, setpost] = useState([]);
+  const dispatch = useDispatch();
 
-  
+  useEffect(() => {
+    getPost();
+  }, []);
+
+  let auth = {
+    headers: {
+      authorization: `bearer ${localStorage.getItem("Token")}`,
+    },
+  };
+  const getPost = async () => {
+    await axios
+      .get("http://localhost:5000/post", auth)
+      .then((response) => {
+        setpost(response.data.post);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const deletePosts = (postId) => {
+    if(window.confirm('Are you sure!! you want to delete post?')){
+      dispatch(deletePost(postId))
+    }
+  }
 
   const [show1, setShow1] = useState(false);
   const handleClose1 = () => setShow1(false);
@@ -17,12 +46,21 @@ const Profile = () => {
 
   return (
     <>
-      <Card style={{ width: "20rem" }} className="mt-5 mx-auto">
+      <Card style={{ width: "24rem" }} className="mt-5 mx-auto">
         <Card.Body>
           <Card.Title>My profile</Card.Title>
           <Card.Text>
             <div className="d-flex justify-content-between align-items-center mb-3 mt-3">
-              <img src={`http://localhost:5000/${profileData.profile}`} style={{ width: "60px", borderRadius: "50%" }} />
+              <img
+                src={`http://localhost:5000/${profileData.profile}`}
+                style={{ width: "60px", borderRadius: "50%" }}
+              />
+
+              <div>
+                <span>{post.length}</span>
+                <span className="ms-1">posts</span>
+              </div>
+
               <div>
                 <span>0</span>
                 <button
@@ -63,14 +101,29 @@ const Profile = () => {
             <hr />
             <p>User name : {profileData?.username}</p>
             <p>Email : {profileData?.email}</p>
-            <button type="button" className="w-100 btn btn-danger">
+            {/* <button type="button" className="w-100 btn btn-danger">
               Delete Profile
-            </button>
+            </button> */}
           </Card.Text>
         </Card.Body>
       </Card>
 
-      
+      <div className="d-flex">
+        {post?.map((iteam, i) => {
+          return (
+            <Card className="ms-4 mt-5" key={i} style={{ width: "15rem" }}>
+              <Card.Img
+                variant="top"
+                src={`http://localhost:5000/${iteam.image}`}
+              />
+              <Card.Body>
+                <Card.Text>{iteam.description}</Card.Text>
+              </Card.Body>
+              <button type="button" className="w-100 btn btn-danger" onClick={()=> deletePosts(iteam.id)} >Delete post</button>
+            </Card>
+          );
+        })}
+      </div>
     </>
   );
 };
