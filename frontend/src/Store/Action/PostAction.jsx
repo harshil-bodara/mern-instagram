@@ -10,9 +10,10 @@ let auth = {
 export const createPost = createAsyncThunk(
   "post/add",
   async (postData, { rejectWithValue }) => {
+    console.log('auth=========>', auth);
     try {
       await axios
-        .post("http://localhost:5000/post/add", postData, auth)
+        .post(`${process.env.REACT_APP_BASE_URL}/post/add`, postData, auth)
         .then((response) => {
           getPost();
         })
@@ -30,7 +31,7 @@ export const deletePost = createAsyncThunk(
   async (postId, { rejectWithValue }) => {
     try {
       await axios
-        .delete(`http://localhost:5000/post/delete/${postId}`, auth)
+        .delete(`${process.env.REACT_APP_BASE_URL}/post/delete/${postId}`, auth)
         .then((response) => {
           getPost();
         })
@@ -46,7 +47,7 @@ export const deletePost = createAsyncThunk(
 export const getPost = createAsyncThunk("post", async ({ rejectWithValue }) => {
   try {
     await axios
-      .get("http://localhost:5000/post", auth)
+      .get(`${process.env.REACT_APP_BASE_URL}/post`, auth)
       .then((response) => {
         return response.data;
       })

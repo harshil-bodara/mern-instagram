@@ -35,7 +35,6 @@ export const Register = () => {
     userData.append("username", registerobj.username);
     userData.append("password", registerobj.password);
     userData.append("profile", registerobj.profile);
-    console.log("userData", userData);
     dispatch(registerUsers(userData));
     navigate("/login");
   };

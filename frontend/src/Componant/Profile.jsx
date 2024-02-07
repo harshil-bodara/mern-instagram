@@ -21,7 +21,7 @@ const Profile = () => {
   };
   const getPost = async () => {
     await axios
-      .get("http://localhost:5000/post", auth)
+      .get(`${process.env.REACT_APP_BASE_URL}/post`, auth)
       .then((response) => {
         setpost(response.data.post);
       })
@@ -52,7 +52,7 @@ const Profile = () => {
           <Card.Text>
             <div className="d-flex justify-content-between align-items-center mb-3 mt-3">
               <img
-                src={`http://localhost:5000/${profileData.profile}`}
+                src={`${process.env.REACT_APP_BASE_URL}/${profileData.profile}`}
                 style={{ width: "60px", borderRadius: "50%" }}
               />
 
@@ -114,7 +114,7 @@ const Profile = () => {
             <Card className="ms-4 mt-5" key={i} style={{ width: "15rem" }}>
               <Card.Img
                 variant="top"
-                src={`http://localhost:5000/${iteam.image}`}
+                src={`${process.env.REACT_APP_BASE_URL}/${iteam.image}`}
               />
               <Card.Body>
                 <Card.Text>{iteam.description}</Card.Text>

@@ -26,7 +26,7 @@ export const HOC = (Componants) => {
 
     const getUser = async () => {
       await axios
-        .get("http://localhost:5000/user")
+        .get(`${process.env.REACT_APP_BASE_URL}/user`)
         .then((response) => {
           setuser(response.data.user);
         })
@@ -37,8 +37,11 @@ export const HOC = (Componants) => {
     const showUser = () => {
       setBar({ isHidden: !bar.isHidden });
     };
-
     const style = { visibility: bar.isHidden ? 'hidden' : 'visible' };
+
+    const getFollowUser = (id) => {
+      console.log('id=====>',id);
+    }
 
     return (
       <>
@@ -95,11 +98,11 @@ export const HOC = (Componants) => {
                   return (
                     <div className="d-flex justify-content-between align-items-center">
                       <img
-                        src={`http://localhost:5000/${item.profile}`}
+                        src={`${process.env.REACT_APP_BASE_URL}/${item.profile}`}
                         style={{ width: "45px", borderRadius: "50%" }}
                       />
                       <p className="ms-3 mt-3">{item.username}</p>
-                      <button className="btn btn-primary">Follow</button>
+                      <button className="btn btn-primary" onClick={()=>getFollowUser(item.id)}>Follow</button>
                     </div>
                   );
                 }

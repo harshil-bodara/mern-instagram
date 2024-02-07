@@ -19,7 +19,6 @@ export const Login = () => {
       password,
     };
     dispatch(loginUsers(loginData)).then((result) => {
-      console.log('result', result);
       if (result.payload) {
         localStorage.setItem("LoginUser", JSON.stringify(result.payload.user));
         localStorage.setItem("Token", result.payload.token);

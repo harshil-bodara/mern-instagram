@@ -6,7 +6,7 @@ export const registerUsers = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       await axios
-        .post("http://localhost:5000/user/register", userData)
+        .post(`${process.env.REACT_APP_BASE_URL}/user/register`, userData)
         .then((response) => {
           return response.data;
         })
@@ -24,10 +24,9 @@ export const loginUsers = createAsyncThunk(
   async (loginData, { rejectWithValue }) => {
     try {
       const request = await axios.post(
-        "http://localhost:5000/user/login",
+        `${process.env.REACT_APP_BASE_URL}/user/login`,
         loginData
       );
-      console.log('request',request);
       const response = await request.data.user;
       return response;
     } catch (error) {
@@ -41,7 +40,7 @@ export const forgetPassword = createAsyncThunk(
   async (forgotPasswordObj, { rejectWithValue }) => {
     try {
       await axios
-        .post("http://localhost:5000/user/forgotPassword", forgotPasswordObj)
+        .post(`${process.env.REACT_APP_BASE_URL}/user/forgotPassword`, forgotPasswordObj)
         .then((response) => {
           return response.data;
         })
@@ -59,7 +58,7 @@ export const resetPassword = createAsyncThunk(
   async (resetPasswordObj, { rejectWithValue }) => {
     try {
       await axios
-        .post("http://localhost:5000/user/resetPassword", resetPasswordObj)
+        .post(`${process.env.REACT_APP_BASE_URL}/user/resetPassword`, resetPasswordObj)
         .then((response) => {
           return response.data;
         })

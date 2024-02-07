@@ -18,6 +18,7 @@ db.sequelize = sequelize;
 
 db.user = require("../models/userModel.js")(sequelize, DataTypes);
 db.post = require("../models/postModel.js")(sequelize, DataTypes);
+db.follow = require("../models/followModel.js")(sequelize, DataTypes);
 
 // user to post Relation
 db.user.hasMany(db.post, { foreignKey: "userId", as: "post" });
@@ -28,7 +29,19 @@ db.post.belongsTo(db.user, {
   onDelete: "CASCADE",
 });
 
-db.sequelize.sync().then(() => {
+// user to follow Relation
+db.user.belongsToMany(db.follow, {
+  through: "follow",
+  foreignKey: "followerId",
+  otherKey: "followingId",
+});
+db.follow.belongsToMany(db.user, {
+  through: "follow",
+  foreignKey: "followingId",
+  otherKey: "followerId",
+});
+
+db.sequelize.sync({ force: true }).then(() => {
   console.log("done");
 });
 

@@ -18,7 +18,7 @@ const HomePage = () => {
 
   const getPost = async () => {
     await axios
-      .get("http://localhost:5000/post/all", auth)
+      .get(`${process.env.REACT_APP_BASE_URL}/post/all`, auth)
       .then((response) => {
         setallPost(response.data.post);
       })
@@ -34,7 +34,7 @@ const HomePage = () => {
             <Card className="ms-5 mt-4" key={i} style={{ width: "25rem" }}>
               <Card.Img
                 variant="top"
-                src={`http://localhost:5000/${iteam.image}`}
+                src={`${process.env.REACT_APP_BASE_URL}/${iteam.image}`}
               />
               <Card.Body>
                 <Card.Text>{iteam.description}</Card.Text>

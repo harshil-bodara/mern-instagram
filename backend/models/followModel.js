@@ -3,20 +3,16 @@ const Sequelize = require("sequelize");
 module.exports = (sequelize) => {
   const { DataTypes } = Sequelize;
 
-  const postScheme = sequelize.define("post", {
+  const followryScheme = sequelize.define("follow", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    image: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    description: {
+    status: {
       type: DataTypes.STRING,
       allowNull: true,
     },
   });
-  return postScheme;
+  return followryScheme;
 };
