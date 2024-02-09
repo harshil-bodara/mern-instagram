@@ -30,15 +30,15 @@ db.post.belongsTo(db.user, {
 });
 
 // user to follow Relation
-db.user.belongsToMany(db.follow, {
-  through: "follow",
-  foreignKey: "followerId",
-  otherKey: "followingId",
+db.user.belongsToMany(db.user, {
+  as: "user",
+  through: db.follow,
+  foreignKey: "senderId",
 });
-db.follow.belongsToMany(db.user, {
-  through: "follow",
-  foreignKey: "followingId",
-  otherKey: "followerId",
+db.user.belongsToMany(db.user, {
+  as: "followed",
+  through: db.follow,
+  foreignKey: "receivId",
 });
 
 db.sequelize.sync({ force: true }).then(() => {

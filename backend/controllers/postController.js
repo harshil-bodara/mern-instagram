@@ -60,28 +60,18 @@ const addPosts = async (req, res) => {
 
 const deletePost = async (req, res) => {
   try {
-    let allReadyExistPost = post.findAll({
+    let posts = await post.destroy({
       where: {
-        name: post.name,
+        id: req.params.id,
       },
     });
-
-    if (allReadyExistPost) {
-      let posts = await post.destroy({
-        where: {
-          id: req.params.id,
-        },
-      });
-      return res.status(200).json({
-        message: "post delete successfully",
-        post: posts,
-      });
-    } else {
-      throw new Error("Product not found");
-    }
+    return res.status(200).json({
+      message: "post delete successfully",
+      post: posts,
+    });
   } catch (error) {
     return res.status(400).json({
-      message: error.message, 
+      message: error.message,
     });
   }
 };

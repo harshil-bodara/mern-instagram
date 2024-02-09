@@ -7,8 +7,8 @@ import { ForgetPassword } from "./Componant/ForgetPassword";
 import { ResetPassword } from "./Componant/ResetPassword";
 import HomePage from "./Componant/HomePage";
 import  Profile  from "./Componant/Profile";
-import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
-import PublicRoute from "./ProtectedRoute/PublicRoute";
+import ProtectedRoute from "./hocs/ProtectedRoute";
+import PublicRoute from "./hocs/PublicRoute";
 import { useSelector } from "react-redux";
 import UserPost from "./Componant/UserPost";
 
@@ -28,11 +28,11 @@ function App() {
           </Route>
 
           <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
-            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/" element={<Navigate to="/home" />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/post" element={<UserPost />} />
-            <Route path="*" element={<Navigate to="/login" />} />
+            <Route path="*" element={<Navigate to="/home" />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -10,15 +10,13 @@ const HomePage = () => {
     getPost();
   }, []);
 
-  let auth = {
-    headers: {
-      authorization: `bearer ${localStorage.getItem("Token")}`,
-    },
-  };
-
   const getPost = async () => {
     await axios
-      .get(`${process.env.REACT_APP_BASE_URL}/post/all`, auth)
+      .get(`${process.env.REACT_APP_BASE_URL}/post/all`, {
+        headers: {
+          authorization: `bearer ${localStorage.getItem("Token")}`,
+        },
+      })
       .then((response) => {
         setallPost(response.data.post);
       })
@@ -26,19 +24,20 @@ const HomePage = () => {
         console.log(error);
       });
   };
+
   return (
     <>
       <div className="mt-5 ms-5">
         {allPost?.map((iteam, i) => {
           return (
             <Card className="ms-5 mt-4" key={i} style={{ width: "25rem" }}>
+              <Card.Body>
+                <Card.Text>{iteam.description}</Card.Text>
+              </Card.Body>
               <Card.Img
                 variant="top"
                 src={`${process.env.REACT_APP_BASE_URL}/${iteam.image}`}
               />
-              <Card.Body>
-                <Card.Text>{iteam.description}</Card.Text>
-              </Card.Body>
             </Card>
           );
         })}

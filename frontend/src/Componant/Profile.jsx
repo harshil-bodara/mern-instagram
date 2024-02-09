@@ -14,14 +14,11 @@ const Profile = () => {
     getPost();
   }, []);
 
-  let auth = {
-    headers: {
-      authorization: `bearer ${localStorage.getItem("Token")}`,
-    },
-  };
   const getPost = async () => {
     await axios
-      .get(`${process.env.REACT_APP_BASE_URL}/post`, auth)
+      .get(`${process.env.REACT_APP_BASE_URL}/post`, {headers: {
+        authorization: `bearer ${localStorage.getItem("Token")}`,
+      }})
       .then((response) => {
         setpost(response.data.post);
       })
@@ -46,6 +43,7 @@ const Profile = () => {
 
   return (
     <>
+      
       <Card style={{ width: "24rem" }} className="mt-5 mx-auto">
         <Card.Body>
           <Card.Title>My profile</Card.Title>

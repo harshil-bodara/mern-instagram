@@ -1,19 +1,16 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-let auth = {
-  headers: {
-    authorization: `bearer ${localStorage.getItem("Token")}`,
-  },
-};
-
 export const createPost = createAsyncThunk(
   "post/add",
   async (postData, { rejectWithValue }) => {
-    console.log('auth=========>', auth);
     try {
       await axios
-        .post(`${process.env.REACT_APP_BASE_URL}/post/add`, postData, auth)
+        .post(`${process.env.REACT_APP_BASE_URL}/post/add`, postData, {
+          headers: {
+            authorization: `bearer ${localStorage.getItem("Token")}`,
+          },
+        })
         .then((response) => {
           getPost();
         })
@@ -31,7 +28,11 @@ export const deletePost = createAsyncThunk(
   async (postId, { rejectWithValue }) => {
     try {
       await axios
-        .delete(`${process.env.REACT_APP_BASE_URL}/post/delete/${postId}`, auth)
+        .delete(`${process.env.REACT_APP_BASE_URL}/post/delete/${postId}`, {
+          headers: {
+            authorization: `bearer ${localStorage.getItem("Token")}`,
+          },
+        })
         .then((response) => {
           getPost();
         })
@@ -47,7 +48,11 @@ export const deletePost = createAsyncThunk(
 export const getPost = createAsyncThunk("post", async ({ rejectWithValue }) => {
   try {
     await axios
-      .get(`${process.env.REACT_APP_BASE_URL}/post`, auth)
+      .get(`${process.env.REACT_APP_BASE_URL}/post`, {
+        headers: {
+          authorization: `bearer ${localStorage.getItem("Token")}`,
+        },
+      })
       .then((response) => {
         return response.data;
       })

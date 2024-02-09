@@ -37,11 +37,11 @@ export const HOC = (Componants) => {
     const showUser = () => {
       setBar({ isHidden: !bar.isHidden });
     };
-    const style = { visibility: bar.isHidden ? 'hidden' : 'visible' };
+    const style = { visibility: bar.isHidden ? "hidden" : "visible" };
 
-    const getFollowUser = (id) => {
-      console.log('id=====>',id);
-    }
+    const getFollowUser = async (id) => {
+      console.log('id',id);
+    };
 
     return (
       <>
@@ -96,13 +96,21 @@ export const HOC = (Componants) => {
               {user.map((item, i) => {
                 if (item.id !== loginUser.id) {
                   return (
-                    <div className="d-flex justify-content-between align-items-center">
+                    <div
+                      key={i}
+                      className="d-flex justify-content-between align-items-center"
+                    >
                       <img
                         src={`${process.env.REACT_APP_BASE_URL}/${item.profile}`}
                         style={{ width: "45px", borderRadius: "50%" }}
                       />
                       <p className="ms-3 mt-3">{item.username}</p>
-                      <button className="btn btn-primary" onClick={()=>getFollowUser(item.id)}>Follow</button>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => getFollowUser(item.id)}
+                      >
+                        Follow
+                      </button>
                     </div>
                   );
                 }
