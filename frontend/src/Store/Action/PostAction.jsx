@@ -63,3 +63,6 @@ export const getPost = createAsyncThunk("post", async ({ rejectWithValue }) => {
     return rejectWithValue(error);
   }
 });
+
+
+

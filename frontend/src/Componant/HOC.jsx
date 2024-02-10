@@ -7,6 +7,7 @@ import { CgProfile } from "react-icons/cg";
 import { BiSearch } from "react-icons/bi";
 import { MdOutlinePostAdd } from "react-icons/md";
 import axios from "axios";
+import { createFollow } from "../Store/Action/PostAction";
 
 export const HOC = (Componants) => {
   const Newcomponant = () => {
@@ -39,8 +40,18 @@ export const HOC = (Componants) => {
     };
     const style = { visibility: bar.isHidden ? "hidden" : "visible" };
 
-    const getFollowUser = async (id) => {
-      console.log('id',id);
+    const addFollowUser = async (id) => {
+      console.log("id", id);
+      await axios
+        .post(`${process.env.REACT_APP_BASE_URL}/follow/add/${id}`, {
+          headers: {
+            authorization: `bearer ${localStorage.getItem("Token")}`,
+          },
+        })
+        .then((response) => {
+          console.log("response.data", response.data);
+          return response.data;
+        });
     };
 
     return (
@@ -107,7 +118,7 @@ export const HOC = (Componants) => {
                       <p className="ms-3 mt-3">{item.username}</p>
                       <button
                         className="btn btn-primary"
-                        onClick={() => getFollowUser(item.id)}
+                        onClick={() => addFollowUser(item.id)}
                       >
                         Follow
                       </button>

@@ -24,19 +24,12 @@ const addFollowRequest = async (req, res) => {
 
 const getFollowRequest = async (req, res) => {
   try {
-    const { id } = req.user;
-    let follows = await follow.findAll({
-      where:{
-        senderId: id
-      },
-      include: [{
-        model : user,
-        as: 'id'
-      }]
+    let users = await user.findAll({
+      where: { id: req.params.id },
     });
     return res.status(200).send({
-      message: "Follow get successfully",
-      follower: follows,
+      message: "User get successfully",
+      user: users,
     });
   } catch (error) {
     return res.status(400).json({
@@ -45,7 +38,53 @@ const getFollowRequest = async (req, res) => {
   }
 };
 
+const updateFollowRequest = async (req, res) => {
+  try {
+    let followUpdate = await follow.update(
+      {
+        status: true,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    return res.status(200).send({
+      message: "Follow update successfully",
+      follow: followUpdate,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+const deleteFollowRequest = async (req, res) => {
+  try {
+    let followDelete = await follow.destroy(
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    console.log('followDelete===>', followDelete);
+    return res.status(200).send({
+      message: "Follow delete successfully",
+      follow: followDelete,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+}
+
 module.exports = {
   addFollowRequest,
   getFollowRequest,
+  updateFollowRequest,
+  deleteFollowRequest
 };

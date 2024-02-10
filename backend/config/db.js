@@ -31,13 +31,13 @@ db.post.belongsTo(db.user, {
 
 // user to follow Relation
 db.user.belongsToMany(db.user, {
-  as: "user",
-  through: db.follow,
+  as: "follower",
+  through: "follow",
   foreignKey: "senderId",
 });
 db.user.belongsToMany(db.user, {
-  as: "followed",
-  through: db.follow,
+  as: "following",
+  through: "follow",
   foreignKey: "receivId",
 });
 
