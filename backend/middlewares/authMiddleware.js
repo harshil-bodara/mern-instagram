@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const userAuthMiddleware = async (req, res, next) => {
-  let token = req.headers["authorization"];
+  let token = req?.headers["authorization"];
   if (!token) {
     return res.status(404).send({ result: "Please add token" });
   } else {

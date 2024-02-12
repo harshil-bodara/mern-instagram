@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import  AuthSlice  from "./Reducer/RootReducers";
 import  userSlice  from "./Reducer/UserReducer";
 import  postSlice  from "./Reducer/PostReducers";
+import  followSlice  from "./Reducer/FollowReducers";
 
 const persistConfig = {
   key: "auth",
@@ -15,7 +16,8 @@ const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userSlice,
-    post : postSlice
+    post: postSlice,
+    follow: followSlice 
   },
 });
 const persistor = persistStore(store);

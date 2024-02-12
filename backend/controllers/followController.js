@@ -4,16 +4,26 @@ const { follow, user } = db;
 const addFollowRequest = async (req, res) => {
   try {
     const { id } = req.user;
-    const addFollow = await follow.create({
-      status: false,
-      senderId: id,
-      receivId: req.params.followingId,
+    let allreadyFollow = follow.findAll({
+      where: { senderId: id },
     });
-    let addFollows = await addFollow.save();
-    return res.status(200).json({
-      message: "Follow successfully",
-      follow: addFollows,
-    });
+
+    if (allreadyFollow.lenght > 0) {
+      res.status(200).json({
+        message: "You are allready follow",
+      });
+    } else {
+      const addFollow = await follow.create({
+        status: false,
+        senderId: id,
+        receiverId: req.params.receiverId,
+      });
+      let addFollows = await addFollow.save();
+      return res.status(200).json({
+        message: "Follow request send successfully",
+        follow: addFollows,
+      });
+    }
   } catch (error) {
     console.log("error", error);
     return res.status(400).json({
@@ -24,15 +34,32 @@ const addFollowRequest = async (req, res) => {
 
 const getFollowRequest = async (req, res) => {
   try {
-    let users = await user.findAll({
-      where: { id: req.params.id },
+    const userId = req.params.userId;
+    const { id } = req.user;
+    const userWithFollowers = await db.user.findByPk(id, {
+      include: [
+        {
+          model: user,
+          as: "follower",
+          through: "follow",
+        },
+      ],
     });
-    return res.status(200).send({
-      message: "User get successfully",
-      user: users,
+
+    if (!userWithFollowers) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      data: {
+        user: userWithFollowers,
+        // followers: userWithFollowers.follower,
+      },
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(500).json({
       message: error.message,
     });
   }
@@ -40,22 +67,36 @@ const getFollowRequest = async (req, res) => {
 
 const updateFollowRequest = async (req, res) => {
   try {
-    let followUpdate = await follow.update(
+    const followId = req.params.id;
+    if (!followId) {
+      return res.status(400).json({
+        message: "Follow ID is required.",
+      });
+    }
+    let [updatedCount, updatedFollows] = await follow.update(
       {
         status: true,
       },
       {
         where: {
-          id: req.params.id,
+          id: followId,
         },
+        returning: true,
       }
     );
-    return res.status(200).send({
-      message: "Follow update successfully",
-      follow: followUpdate,
+    if (updatedCount === 0) {
+      return res.status(404).json({
+        message: "Follow request not found.",
+      });
+    }
+    return res.status(200).json({
+      data: {
+        message: "Follow request updated successfully.",
+        follow: updatedFollows[0],
+      },
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(500).json({
       message: error.message,
     });
   }
@@ -63,28 +104,39 @@ const updateFollowRequest = async (req, res) => {
 
 const deleteFollowRequest = async (req, res) => {
   try {
-    let followDelete = await follow.destroy(
-      {
-        where: {
-          id: req.params.id,
-        },
-      }
-    );
-    console.log('followDelete===>', followDelete);
-    return res.status(200).send({
-      message: "Follow delete successfully",
-      follow: followDelete,
+    const followId = req.params.id;
+    if (!followId) {
+      return res.status(400).json({
+        message: "Follow ID is required.",
+      });
+    }
+    const deletedCount = await follow.destroy({
+      where: {
+        id: followId,
+      },
+    });
+    if (deletedCount === 0) {
+      return res.status(404).json({
+        message: "Follow request not found.",
+      });
+    }
+    return res.status(200).json({
+      data: {
+        message: "Follow request deleted successfully.",
+        follow: followId,
+      },
     });
   } catch (error) {
-    return res.status(400).json({
+    console.error("Error:", error);
+    return res.status(500).json({
       message: error.message,
     });
   }
-}
+};
 
 module.exports = {
   addFollowRequest,
   getFollowRequest,
   updateFollowRequest,
-  deleteFollowRequest
+  deleteFollowRequest,
 };
