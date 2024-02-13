@@ -9,17 +9,12 @@ import { MdOutlinePostAdd } from "react-icons/md";
 import axios from "axios";
 import {
   addFollow,
-  deleteFollow,
-  updateFollow,
 } from "../Store/Action/FollowAction";
-import { FaBell } from "react-icons/fa";
 
 export const HOC = (Componants) => {
   const Newcomponant = () => {
     const [user, setuser] = useState([]);
-    const [followRequest, setfollowRequest] = useState([]);
-    const [bar1, setBar1] = useState({ isHidden: true });
-    const [bar2, setBar2] = useState({ isHidden: true });
+    const [bar, setBar] = useState({ isHidden: true });
     const dispatch = useDispatch();
     const loginUser = JSON.parse(localStorage.getItem("LoginUser"));
     const logoutAccount = () => {
@@ -43,40 +38,15 @@ export const HOC = (Componants) => {
         });
     };
     const showUser = () => {
-      setBar1({ isHidden: !bar1.isHidden });
-    };
-
-    const showFollowing = async (id) => {
-      setBar2({ isHidden: !bar2.isHidden });
-      await axios
-        .get(`${process.env.REACT_APP_BASE_URL}/follow/${id}`, {
-          headers: {
-            authorization: `bearer ${localStorage.getItem("Token")}`,
-          },
-        })
-        .then((response) => {
-          setfollowRequest(response.data.data.user.follower);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      setBar({ isHidden: !bar.isHidden });
     };
 
     const addFollowRequest = (receiverId) => {
       dispatch(addFollow(receiverId));
     };
 
-    const acceptFollowRequest = (requestId) => {
-      dispatch(updateFollow(requestId));
-    };
-
-    const deleteFollowRequest = (requestId) => {
-      dispatch(deleteFollow(requestId));
-    };
-
-    const style1 = { visibility: bar1.isHidden ? "hidden" : "visible" };
-    const style2 = { visibility: bar2.isHidden ? "hidden" : "visible" };
-
+    const style = { visibility: bar.isHidden ? "hidden" : "visible" };
+  
     return (
       <>
         <div className="d-flex">
@@ -118,13 +88,6 @@ export const HOC = (Componants) => {
                 <BiSearch size={30} />
               </div>
               <div className="d-flex align-items-center">
-                <div>
-                  <FaBell
-                    size={25}
-                    color="black"
-                    onClick={() => showFollowing(loginUser.id)}
-                  />
-                </div>
                 <div className="ms-4">
                   <Link to="/profile">
                     <CgProfile size={30} color="black" />
@@ -135,7 +98,7 @@ export const HOC = (Componants) => {
                 </button>
               </div>
             </div>
-            <div id="requestSend-div" style={style1}>
+            <div id="requestSend-div" style={style}>
               {user.map((item, i) => {
                 if (item.id !== loginUser.id) {
                   return (
@@ -158,50 +121,13 @@ export const HOC = (Componants) => {
                       >
                         Follow
                       </button>
-                      {/* <button
-                        className="btn btn-warning"
-                        // onClick={() => addFollowRequest(item.id)}
-                      >
-                        Request
-                      </button> */}
                     </div>
                   );
                 }
               })}
             </div>
-            <div id="followRequest-div" style={style2}>
-              {followRequest.map((item, i) => {
-                console.log('followRequest======>', followRequest.map((x) => x.follow.status));
-                return (
-                  <div
-                    key={i}
-                    className="d-flex justify-content-between align-items-center"
-                  >
-                    <img
-                      src={`${process.env.REACT_APP_BASE_URL}/${item.profile}`}
-                      style={{ width: "45px", borderRadius: "50%" }}
-                    />
-                    <p className="ms-3 mt-3">{item.username}</p>
-                    <div>
-                      <button
-                        className="btn btn-primary me-1"
-                        onClick={() => acceptFollowRequest(item.follow.id)}
-                      >
-                        Accept
-                      </button>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => deleteFollowRequest(item.follow.id)}
-                      >
-                        Unfollow
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
             <div>
-              <Componants />
+              <Componants  />
             </div>
           </div>
         </div>

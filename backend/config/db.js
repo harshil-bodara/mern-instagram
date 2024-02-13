@@ -19,6 +19,7 @@ db.sequelize = sequelize;
 db.user = require("../models/userModel.js")(sequelize, DataTypes);
 db.post = require("../models/postModel.js")(sequelize, DataTypes);
 db.follow = require("../models/followModel.js")(sequelize, DataTypes);
+db.like = require("../models/likeModel.js")(sequelize, DataTypes);
 
 // user to post Relation
 db.user.hasMany(db.post, { foreignKey: "userId", as: "post" });
@@ -39,6 +40,15 @@ db.user.belongsToMany(db.user, {
   as: "follower",
   through: "follow",
   foreignKey: "receiverId",
+});
+
+// post to like Relation
+db.post.hasMany(db.like, { foreignKey: "postId", as: "like" });
+db.like.belongsTo(db.post, {
+  foreignKey: "postId",
+  as: "post",
+  constraints: true,
+  onDelete: "CASCADE",
 });
 
 db.sequelize.sync({ force: true }).then(() => {

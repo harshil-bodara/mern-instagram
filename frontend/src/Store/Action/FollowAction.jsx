@@ -56,7 +56,7 @@ export const updateFollow = createAsyncThunk(
     "follow/update",
     async (requestId, { rejectWithValue }) => {
       try {
-        await axios
+        const request =  await axios
           .put(
             `${process.env.REACT_APP_BASE_URL}/follow/update/${requestId}`,{},
             {
@@ -65,12 +65,8 @@ export const updateFollow = createAsyncThunk(
               },
             }
           )
-          .then((response) => {
-            return response.data;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+          const response = await request.data.data
+          return response;
       } catch (error) {
         return rejectWithValue(error);
       }

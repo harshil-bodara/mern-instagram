@@ -34,7 +34,6 @@ const addFollowRequest = async (req, res) => {
 
 const getFollowRequest = async (req, res) => {
   try {
-    const userId = req.params.userId;
     const { id } = req.user;
     const userWithFollowers = await db.user.findByPk(id, {
       include: [
@@ -89,10 +88,64 @@ const updateFollowRequest = async (req, res) => {
         message: "Follow request not found.",
       });
     }
+    const followerUserId = updatedFollows[0].senderId;
+    const followingUserId = updatedFollows[0].receiverId;
+    const followersCount = await follow.count({
+      where: {
+        receiverId: followingUserId,
+        status: true,
+      },
+    });
+    const followingCount = await follow.count({
+      where: {
+        senderId: followerUserId,
+        status: true,
+      },
+    });
     return res.status(200).json({
       data: {
         message: "Follow request updated successfully.",
         follow: updatedFollows[0],
+        followersCount,
+        followingCount,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+const getUserFollowingAndFollowers = async (req, res) => {
+  try {
+    const { id } = req.user;
+    if (!id) {
+      return res.status(400).json({
+        message: "User ID is required.",
+      });
+    }
+    // Get following users
+    const followingUsers = await follow.findAll({
+      where: {
+        followerId: id,
+        status: true,
+      },
+      include: [{ model: user, as: 'following' }],
+    });
+    // Get followers users
+    const followerUsers = await follow.findAll({
+      where: {
+        followingId: id,
+        status: true,
+      },
+      include: [{ model: user, as: 'follower' }], 
+    });
+
+    return res.status(200).json({
+      data: {
+        followingUsers,
+        followerUsers,
       },
     });
   } catch (error) {
@@ -138,5 +191,6 @@ module.exports = {
   addFollowRequest,
   getFollowRequest,
   updateFollowRequest,
+  getUserFollowingAndFollowers,
   deleteFollowRequest,
 };
