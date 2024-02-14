@@ -3,16 +3,16 @@ const Sequelize = require("sequelize");
 module.exports = (sequelize) => {
   const { DataTypes } = Sequelize;
 
-  const likeScheme = sequelize.define("like", {
+  const commentScheme = sequelize.define("comment", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    like: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
+    comment: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   });
-  return likeScheme;
+  return commentScheme;
 };

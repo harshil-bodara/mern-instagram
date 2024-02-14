@@ -97,3 +97,7 @@ input {
   padding: 10px;
   width: 50%;
 }
+
+.comment-div{
+  float: right;
+}

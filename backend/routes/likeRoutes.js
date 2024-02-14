@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  addComment,
-  getComments,
-  deleteComment,
+  addLike,
+  getLikes,
+  deleteLike,
 } = require("../controllers/likeController");
 const { userAuthMiddleware } = require("../middlewares/authMiddleware");
 
-router.post("/add/:postId", userAuthMiddleware, addComment);
-router.get("/:postId", userAuthMiddleware, getComments);
-router.delete("/delete/:commentId", userAuthMiddleware, deleteComment);
+router.post("/add/:postId", userAuthMiddleware, addLike);
+router.get("/:postId", userAuthMiddleware, getLikes);
+router.delete("/delete/:likeId", userAuthMiddleware, deleteLike);
 
 module.exports = router;

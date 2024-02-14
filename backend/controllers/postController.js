@@ -1,5 +1,5 @@
 const db = require("../config/db");
-const { post } = db;
+const { post,user } = db;
 
 const getPosts = async (req, res) => {
   try {
@@ -21,9 +21,11 @@ const getPosts = async (req, res) => {
 const getAllPosts = async (req, res) => {
   try {
     let posts = await post.findAll({});
+    let users = await user.findAll({})
     return res.status(200).send({
       message: "Allpost get successfully",
       post: posts,
+      user:users
     });
   } catch (error) {
     return res.status(400).json({

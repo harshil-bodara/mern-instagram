@@ -9,7 +9,7 @@ const addFollowRequest = async (req, res) => {
     });
 
     if (allreadyFollow.lenght > 0) {
-      res.status(200).json({
+      res.status(400).json({
         message: "You are allready follow",
       });
     } else {
@@ -120,34 +120,57 @@ const updateFollowRequest = async (req, res) => {
 const getUserFollowingAndFollowers = async (req, res) => {
   try {
     const { id } = req.user;
-    if (!id) {
-      return res.status(400).json({
-        message: "User ID is required.",
+    const userWithFollowers = await db.follow.findByPk(id, {
+      include: [
+        {
+          model: user,
+          as: "following",
+          through: "follow",
+        },
+      ],
+    });
+
+    if (!userWithFollowers) {
+      return res.status(404).json({
+        message: "User not found",
       });
     }
-    // Get following users
-    const followingUsers = await follow.findAll({
-      where: {
-        followerId: id,
-        status: true,
-      },
-      include: [{ model: user, as: 'following' }],
-    });
-    // Get followers users
-    const followerUsers = await follow.findAll({
-      where: {
-        followingId: id,
-        status: true,
-      },
-      include: [{ model: user, as: 'follower' }], 
-    });
 
     return res.status(200).json({
       data: {
-        followingUsers,
-        followerUsers,
+        user: userWithFollowers,
       },
     });
+
+    // const { id } = req.user;
+    // if (!id) {
+    //   return res.status(400).json({
+    //     message: "User ID is required.",
+    //   });
+    // }
+    // // Get following users
+    // const followingUsers = await follow.findAll({
+    //   where: {
+    //     followerId: id,
+    //     status: true,
+    //   },
+    //   include: [{ model: user, as: 'following' }],
+    // });
+    // // Get followers users
+    // const followerUsers = await follow.findAll({
+    //   where: {
+    //     followingId: id,
+    //     status: true,
+    //   },
+    //   include: [{ model: user, as: 'follower' }],
+    // });
+
+    // return res.status(200).json({
+    //   data: {
+    //     followingUsers,
+    //     followerUsers,
+    //   },
+    // });
   } catch (error) {
     return res.status(500).json({
       message: error.message,

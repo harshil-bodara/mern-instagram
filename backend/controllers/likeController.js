@@ -1,18 +1,17 @@
 const db = require("../config/db");
-const { like } = db;
+const { like,user } = db;
 
-const addComment = async (req, res) => {
+const addLike = async (req, res) => {
   try {
     let postId = req.params.postId;
-    const { comment } = req.body;
     const createComment = await like.create({
-      comment: comment,
+      like: 1,
       postId: postId,
     });
-    let comments = await createComment.save();
+    let likes = await createComment.save();
     res.status(200).json({
-      message: "Comment created successfully",
-      comment: comments,
+      message: "Like created successfully",
+      like: likes,
     });
   } catch (error) {
     return res.status(400).json({
@@ -21,15 +20,17 @@ const addComment = async (req, res) => {
   }
 };
 
-const getComments = async (req, res) => {
+const getLikes = async (req, res) => {
   try {
     let postId = req.params.postId;
-    let comments = await like.findAll({
+    let likes = await like.findAll({
       where: { postId: postId },
     });
+    let users = await user.findAll({});
     return res.status(200).send({
-      message: "Post Comments successfully",
-      comment: comments,
+      message: "get Comments successfully",
+      like: likes,
+      user: users,
     });
   } catch (error) {
     return res.status(400).json({
@@ -38,17 +39,17 @@ const getComments = async (req, res) => {
   }
 };
 
-const deleteComment = async (req, res) => {
+const deleteLike = async (req, res) => {
   try {
-    let commentId = req.params.commentId;
-    const deletedComments = await like.destroy({
+    let likeId = req.params.likeId;
+    const deleteLikes = await like.destroy({
       where: {
-        id: commentId,
+        id: likeId,
       },
     });
     res.status(200).json({
-      message: "Comment delete successfully",
-      comment: deletedComments,
+      message: "Delete like successfully",
+      like: deleteLikes,
     });
   } catch (error) {
     return res.status(400).json({
@@ -57,4 +58,8 @@ const deleteComment = async (req, res) => {
   }
 };
 
-module.exports = { addComment, getComments, deleteComment };
+module.exports = {
+  addLike,
+  getLikes,
+  deleteLike,
+};
